@@ -191,11 +191,11 @@ export class Player {
       this.grounded = false;
     }
 
-    // keep the player on the island
+    // keep the player on the island (expanded map)
     const r = Math.hypot(this.pos.x, this.pos.z);
-    if (r > 58) {
-      this.pos.x *= 58 / r;
-      this.pos.z *= 58 / r;
+    if (r > 200) {
+      this.pos.x *= 200 / r;
+      this.pos.z *= 200 / r;
     }
 
     // ---- avatar ----

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { Cost } from './catalog';
 
-export type NodeKind = 'tree' | 'rock' | 'scrap' | 'plastic' | 'crystal' | 'terminal';
+export type NodeKind = 'tree' | 'rock' | 'scrap' | 'plastic' | 'crystal' | 'terminal' | 'grass' | 'flower' | 'bush' | 'corpse';
 
 export type NodeDef = {
   label: string;
@@ -19,6 +19,10 @@ export const NODE_DEF: Record<NodeKind, NodeDef> = {
   plastic: { label: 'Polymer drums', verb: 'Collect', yields: { polymer: 4 }, respawn: 22, icon: '🧴', range: 3.2 },
   crystal: { label: 'Silica crystal', verb: 'Harvest', yields: { glass: 2, data: 1 }, respawn: 38, icon: '🔹', range: 3.2 },
   terminal: { label: 'Dead terminal', verb: 'Extract', yields: { data: 3 }, respawn: 44, icon: '💠', range: 3.0 },
+  grass: { label: 'Grass tuft', verb: 'Harvest', yields: { data: 1 }, respawn: 10, icon: '🌿', range: 0.8 },
+  flower: { label: 'Wild flower', verb: 'Pick', yields: { data: 1 }, respawn: 18, icon: '🌸', range: 1.0 },
+  bush: { label: 'Bush', verb: 'Prune', yields: { data: 2 }, respawn: 20, icon: '🌿', range: 1.2 },
+  corpse: { label: 'Rotting corpse', verb: 'Scavenge', yields: { data: 3 }, respawn: 30, icon: '☠️', range: 1.5 },
 };
 
 const COLORS = {
@@ -224,6 +228,65 @@ export class ResourceNode {
         this.visual.add(base, screen, antenna, tip);
         break;
       }
+      case 'grass': {
+        const grass = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.15, 0.15, 0.3 + r() * 0.4, 6, 4),
+          new THREE.MeshStandardMaterial({
+            color: '#8bc34a',
+            roughness: 0.9,
+            metalness: 0.0,
+          }),
+        );
+        grass.position.y = 0.15;
+        this.visual.add(grass);
+        break;
+      }
+      case 'flower': {
+        const flower = new THREE.Mesh(
+          new THREE.ConeGeometry(0.2 + r() * 0.3, 0.5 + r() * 0.3, 8),
+          new THREE.MeshStandardMaterial({
+            color: '#ffc107',
+            roughness: 0.8,
+            metalness: 0.0,
+          }),
+        );
+        flower.position.y = 0.45 + r() * 0.1;
+        this.visual.add(flower);
+        break;
+      }
+      case 'bush': {
+        const bush = new THREE.Mesh(
+          new THREE.SphereGeometry(0.4 + r() * 0.3, 12, 12),
+          new THREE.MeshStandardMaterial({
+            color: '#6b901f',
+            roughness: 0.8,
+            metalness: 0.0,
+          }),
+        );
+        this.visual.add(bush);
+        break;
+      }
+      case 'corpse': {
+        const corpse = new THREE.Mesh(
+          new THREE.SphereGeometry(0.35, 12, 12),
+          new THREE.MeshStandardMaterial({
+            color: '#4a1a0f',
+            roughness: 0.9,
+            metalness: 0.1,
+          }),
+        );
+        corpse.position.y = 0.175;
+        // Add red 'blood' particles
+        for (let i = 0; i < 6; i++) {
+          const particle = new THREE.Mesh(
+            new THREE.SphereGeometry(0.03, 6, 6),
+            new THREE.MeshStandardMaterial({ color: '#ff5252', emissive: '#ff5252', emissiveIntensity: 0.8 }),
+          );
+          particle.position.set((r() - 0.5) * 0.4, 0.3 + r() * 0.3, (r() - 0.5) * 0.4);
+          this.visual.add(particle);
+        }
+        break;
+      }
     }
   }
 
@@ -264,12 +327,16 @@ function mulberry32(seed: number) {
 export type SavedNode = { k: NodeKind; x: number; z: number; c: number };
 
 const PLAN: [NodeKind, number][] = [
-  ['tree', 12],
-  ['rock', 8],
-  ['scrap', 7],
-  ['plastic', 5],
-  ['crystal', 4],
-  ['terminal', 3],
+  ['tree', 20],
+  ['rock', 15],
+  ['scrap', 10],
+  ['plastic', 8],
+  ['crystal', 8],
+  ['terminal', 5],
+  ['grass', 40],
+  ['flower', 30],
+  ['bush', 20],
+  ['corpse', 10],
 ];
 
 export class NodeField {
