@@ -11,6 +11,7 @@
     "fetch-assets": "node scripts/fetch-assets.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "three": "^0.180.0"
   },
   "devDependencies": {
