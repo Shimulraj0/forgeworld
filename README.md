@@ -1,6 +1,10 @@
 # FORGE WORLD
 
+**▶ Play live: [https://shimul.is-a.dev/forgeworld/](https://shimul.is-a.dev/forgeworld/)** · access key `RAJ-FW-2026`
+
 A 3D browser sandbox where you gather raw materials, refine them into components, and fabricate real industrial props from **NVIDIA's SimReady library** — then place, stack and build your own island workshop.
+
+Authorized build by **RAJ** — [shimul.is-a.dev](https://shimul.is-a.dev) · build ID `FW-RAJ-001`
 
 Built with Vite + TypeScript + three.js. No backend, no install, no account: the world saves to `localStorage`.
 
