@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- Build authorization: FW-RAJ-001 · RAJ · https://shimul.is-a.dev -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FORGE WORLD — SimReady Sandbox</title>
+    <meta
+      name="description"
+      content="A 3D browser sandbox where you gather, craft and build with 2,595 simulation-ready NVIDIA SimReady assets."
+    />
+    <meta name="author" content="RAJ" />
+    <meta name="build-author" content="RAJ" />
+    <meta name="build-credit" content="https://shimul.is-a.dev" />
+    <meta name="build-id" content="FW-RAJ-001" />
+    <link rel="author" href="https://shimul.is-a.dev" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1219'/%3E%3Cpath d='M18 46V20h12l6 9 6-9h4v26h-7V31l-7 10-7-10v15z' fill='%23ffb347'/%3E%3C/svg%3E"
+    />
+    <script type="module" crossorigin src="./assets/index-QZpsV6n1.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DRgq6t6t.css">
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene"></canvas>
+
+      <div id="ui">
+        <header id="topbar">
+          <div class="brand">
+            <div class="brand-mark">
+              <svg viewBox="0 0 32 32" aria-hidden="true">
+                <path d="M4 26V6h11l5 8 5-8h3v20h-6V16l-7 10-7-10v10z" />
+              </svg>
+            </div>
+            <div class="brand-text">
+              <strong>FORGE WORLD</strong>
+              <span>NVIDIA SimReady · built by <a class="brand-credit" href="https://shimul.is-a.dev" target="_blank" rel="noreferrer">RAJ</a></span>
+            </div>
+          </div>
+          <div id="resources" class="resources"></div>
+          <div class="top-actions">
+            <button id="btn-help" class="icon-btn" title="Help (H)" aria-label="Help">?</button>
+            <button id="btn-craft" class="pill-btn" title="Fabricator (C)">
+              <span class="dot"></span> Fabricator
+            </button>
+          </div>
+        </header>
+
+        <aside id="goals" class="glass panel-left"></aside>
+
+        <div id="prompt" class="prompt"></div>
+        <div id="reticle" class="reticle"></div>
+
+        <div id="hotbar" class="hotbar"></div>
+        <div id="hintbar" class="hintbar"></div>
+
+        <section id="panel" class="panel-right glass" aria-hidden="true"></section>
+
+        <div id="toasts" class="toasts"></div>
+        <div id="floaters" class="floaters"></div>
+        <div id="modal" class="modal" aria-hidden="true"></div>
+
+        <div id="intro" class="intro">
+          <div class="intro-card">
+            <div class="intro-eyebrow">Simulation-ready sandbox · authorized build by RAJ</div>
+            <h1>FORGE<span>WORLD</span></h1>
+            <p class="intro-lede">
+              A quiet island, a fabricator, and 2,595 real industrial assets from
+              NVIDIA's SimReady library. Harvest. Refine. Fabricate. Build.
+            </p>
+            <ol class="intro-loop">
+              <li><b>01</b><span>Gather wood, stone, metal and polymer from the island</span></li>
+              <li><b>02</b><span>Refine raw stock into planks, plates, sheets and frames</span></li>
+              <li><b>03</b><span>Fabricate any SimReady asset in the catalog</span></li>
+              <li><b>04</b><span>Place it, stack it, and grow your world</span></li>
+            </ol>
+            <div class="intro-keys">
+              <div><kbd>W A S D</kbd><span>move</span></div>
+              <div><kbd>drag</kbd><span>orbit</span></div>
+              <div><kbd>E</kbd><span>gather</span></div>
+              <div><kbd>C</kbd><span>fabricator</span></div>
+              <div><kbd>B</kbd><span>build</span></div>
+            </div>
+            <button id="btn-start" class="primary-btn">Enter the world</button>
+            <p class="intro-foot">
+              Assets: NVIDIA SimReady (CC BY 4.0) · Web GLB conversion by
+              <a href="https://huggingface.co/datasets/codepawl/simready-glb" target="_blank" rel="noreferrer">simready-glb</a><br />
+              Built by <a class="credit-name" href="https://shimul.is-a.dev" target="_blank" rel="noreferrer"><b>RAJ</b></a>
+              · <a href="https://shimul.is-a.dev" target="_blank" rel="noreferrer">shimul.is-a.dev</a>
+              · build FW-RAJ-001
+            </p>
+          </div>
+        </div>
+
+        <div id="loading" class="loading">
+          <div class="loading-inner">
+            <div class="spinner"></div>
+            <div class="loading-text">Booting the world…</div>
+            <div class="loading-bar"><i id="loading-fill"></i></div>
+          </div>
+        </div>
+
+        <!-- Build authorization gate · issued by RAJ · https://shimul.is-a.dev -->
+        <div id="auth" class="auth">
+          <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+            <div class="auth-shield" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5l-8-3z" opacity=".3" />
+                <path d="M12 7.5a2.5 2.5 0 0 1 1.4 4.6l1.1 3.9h-5l1.1-3.9A2.5 2.5 0 0 1 12 7.5z" />
+              </svg>
+            </div>
+            <div class="auth-eyebrow">Build authorization required</div>
+            <h2 id="auth-title">AUTHORIZED <span>BUILD</span></h2>
+            <p class="auth-lede">
+              This copy of FORGE WORLD is sealed to its author. Enter the access
+              key issued with the build to unlock it.
+            </p>
+            <dl class="auth-meta">
+              <div><dt>Build</dt><dd id="auth-build">FW-RAJ-001</dd></div>
+              <div><dt>Author</dt><dd id="auth-author">RAJ</dd></div>
+              <div><dt>Homepage</dt><dd><a id="auth-site" href="https://shimul.is-a.dev" target="_blank" rel="noreferrer">shimul.is-a.dev</a></dd></div>
+            </dl>
+            <div class="auth-row">
+              <input
+                id="auth-key"
+                class="auth-input"
+                type="text"
+                spellcheck="false"
+                autocomplete="off"
+                placeholder="ACCESS KEY · RAJ-••-••••"
+                aria-label="Access key"
+              />
+              <button id="auth-go" class="primary-btn auth-go">Authorize</button>
+            </div>
+            <div id="auth-status" class="auth-status" role="status"></div>
+            <p class="auth-foot">
+              Keys are issued by <a href="https://shimul.is-a.dev" target="_blank" rel="noreferrer">RAJ</a> —
+              request access at <a href="https://shimul.is-a.dev" target="_blank" rel="noreferrer">shimul.is-a.dev</a>.
+              Unauthorized copying or redistribution of this build is not permitted.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
