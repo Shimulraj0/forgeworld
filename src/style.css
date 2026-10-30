@@ -1795,3 +1795,102 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   Responsive / accessibility layer (game-ui-ux)
+   - Safe-area insets so HUD clears notches, rounded corners, TV overscan
+   - Visible keyboard focus for menu/HUD navigation
+   - Motion opt-out for players who request reduced motion
+   - Slightly larger HUD text on small screens
+   ============================================================ */
+
+/* --- Safe-area insets: keep critical HUD off screen edges --- */
+.topbar,
+.top-left {
+  padding-top: max(0px, env(safe-area-inset-top));
+}
+#goals {
+  left: max(16px, env(safe-area-inset-left));
+  top: calc(76px + env(safe-area-inset-top));
+  max-height: calc(100dvh - 160px - env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+.panel-right {
+  padding-right: max(0px, env(safe-area-inset-right));
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
+}
+.hotbar {
+  bottom: calc(46px + env(safe-area-inset-bottom));
+  max-width: calc(100vw - 16px - env(safe-area-inset-left) - env(safe-area-inset-right));
+  overflow-x: auto;
+}
+.hintbar {
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  max-width: calc(100vw - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.toasts {
+  top: calc(16px + env(safe-area-inset-top));
+}
+#prompt,
+.prompt {
+  bottom: calc(100px + env(safe-area-inset-bottom));
+}
+.modal-card {
+  max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+}
+
+/* --- Keyboard focus: always visible, never invisible outline --- */
+button:focus-visible,
+[role='button']:focus-visible,
+input:focus-visible,
+a:focus-visible,
+.tab:focus-visible,
+.chip:focus-visible,
+.slot:focus-visible,
+.recipe:focus-visible,
+.asset:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.slot:focus-visible {
+  outline-offset: 3px;
+}
+.slot:disabled {
+  cursor: not-allowed;
+}
+
+/* --- Reduced motion: stop decorative ids/hovers, keep state legible --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .hotbar,
+  .hotbar.empty,
+  .panel-right,
+  #goals {
+    transition: none !important;
+  }
+}
+
+/* --- Small screens: keep HUD text readable (>= 12px) --- */
+@media (max-width: 520px) {
+  .hintbar {
+    font-size: 11px;
+    gap: 8px;
+  }
+  #goals {
+    width: min(288px, calc(100vw - 32px));
+  }
+  .hotbar {
+    gap: 5px;
+    padding: 6px;
+  }
+}

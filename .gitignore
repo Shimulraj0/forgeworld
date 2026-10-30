@@ -3,3 +3,6 @@ dist/
 scripts/.cache/
 *.local
 .DS_Store
+
+# Local agent-skill mirror (symlinks into .agents/skills with absolute paths)
+.claude/

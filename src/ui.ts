@@ -324,16 +324,37 @@ export class UI {
         const info = getAsset(id);
         const n = this.game.props[id] ?? 0;
         const active = this.game.placer.activeId === id;
+        const disabled = n <= 0;
         return `<button class="slot${n <= 0 ? ' missing' : ''}${active ? ' active' : ''}" data-hot="${esc(id)}"
-          title="${esc(info?.name ?? id)} · ${n} owned · press ${i + 1}">
+          title="${esc(info?.name ?? id)} · ${n} owned · press ${i + 1}"
+          ${disabled ? 'disabled' : ''}
+          ${!disabled ? `style="opacity: 1;"` : `style="opacity: 0.5;"`}
+        >
           <span class="key">${i + 1}</span>
-          ${info ? `<img src="${esc(info.thumb)}" alt="" loading="lazy" draggable="false" />` : '<span class="em">📦</span>'}
+          ${info ? `<img src="${esc(info.thumb)}" alt="${esc(info.name)}" loading="lazy" draggable="false" />` : '<span class="em">📦</span>'}
           <span class="n">${n}</span>
         </button>`;
       })
       .join('');
     this.bindImages(this.el.hotbar);
   }
+
+  private bindImages(root: ParentNode) {
+    root.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+      img.addEventListener(
+        'error',
+        () => {
+          const span = document.createElement('span');
+          span.className = 'fallback';
+          span.textContent = '📦';
+          img.replaceWith(span);
+        },
+        { once: true },
+      );
+    });
+  }
+
+  // ------------------------------------------------------------ refresh chrome
 
   private renderChrome() {
     const ownedUnits = Object.values(this.game.props).reduce((a, b) => a + b, 0);
@@ -484,7 +505,7 @@ export class UI {
 
       <div class="section-label">How it works</div>
       <p class="tip">
-        <b>2 Wood → 1 Plank</b> · <b>2 Metal → 1 Plate</b> · <b>2 Plank + 1 Plate → 1 Frame</b>.
+        <b>2 Wood → 1 Plank</b> · <b>2 Metal → 1 Plate</b> · <b>2 Plank + 1 Plate → 1 Frame</b>.<br />
         Fabricating an asset automatically consumes any missing intermediates straight from raw stock —
         so you can go from tree to industrial robot in one click.
       </p>`;
@@ -577,11 +598,7 @@ export class UI {
         <span class="lib-count">${fmtNum(list.length)} match${list.length === 1 ? '' : 'es'} · showing ${shown.length}</span>
       </div>
       ${cards ? `<div class="asset-grid">${cards}</div>` : '<div class="empty-state">No assets match that search.</div>'}
-      ${
-        list.length > shown.length
-          ? `<button class="more-btn" data-act="more">Load ${Math.min(36, list.length - shown.length)} more · ${fmtNum(list.length - shown.length)} remaining</button>`
-          : ''
-      }`;
+      ${list.length > shown.length ? `<button class="more-btn" data-act="more">Load ${Math.min(36, list.length - shown.length)} more · ${fmtNum(list.length - shown.length)} remaining</button>` : ''}`;
   }
 
   private assetCard(info: AssetInfo | undefined, owned: number, action: 'place' | 'detail'): string {
@@ -661,22 +678,17 @@ export class UI {
           <div class="stat-row">${stats}</div>
           <div class="section-label">Fabrication cost</div>
           <div class="detail-cost">${costChips}</div>
-          <div class="rawline">${
-            affordable
+          <div class="rawline">
+            ${affordable
               ? `<span class="ok">Stock covered</span> · ${esc(describeCost(raw))} in raw materials`
               : `<span class="warn">Missing ${esc(describeCost(missing))}</span> · ${esc(describeCost(raw))} total`
-          }</div>
-          <div class="owned-line">Owned <b>${owned}</b> · placed ${placed} · ${
-            info.local ? 'bundled asset' : 'streamed on demand'
-          }</div>
+            }
+          </div>
+          <div class="owned-line">Owned <b>${owned}</b> · placed ${placed} · ${info.local ? 'bundled asset' : 'streamed on demand'}</div>
           <div class="detail-actions">
             <button class="primary-btn" data-fab="${esc(id)}">Fabricate</button>
             <button class="ghost-btn" data-fab-place="${esc(id)}">Fabricate + place</button>
-            ${
-              owned > 0
-                ? `<button class="ghost-btn" data-place="${esc(id)}">Place owned</button>`
-                : ''
-            }
+            ${owned > 0 ? `<button class="ghost-btn" data-place="${esc(id)}">Place owned</button>` : ''}
           </div>
           <a class="src-link" href="${HF_BLOB}/glb/${encodeURIComponent(id)}.glb" target="_blank" rel="noreferrer">
             Source GLB on Hugging Face ↗
@@ -726,7 +738,7 @@ export class UI {
         <div class="help-note">
           Your island autosaves to this browser every 15 seconds. All 2,595 assets are real
           <b>NVIDIA SimReady</b> models, converted to meshopt + WebP GLB by
-          <a href="https://huggingface.co/datasets/codepawl/simready-glb" target="_blank" rel="noreferrer">simready-glb</a>.
+          <a href="https://huggingface.co/datasets/codepawl/simready-glb" target="_blank" rel="noreferrer">simready-glb</a>.<br />
           Place a prop, walk away, come back — it will still be there.
         </div>
         ${this.buildAuthHtml()}
@@ -781,21 +793,6 @@ export class UI {
     if (t.closest('[data-act="reset"]')) {
       if (window.confirm('Erase this island and start a fresh world?')) this.game.resetWorld();
     }
-  }
-
-  private bindImages(root: ParentNode) {
-    root.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
-      img.addEventListener(
-        'error',
-        () => {
-          const span = document.createElement('span');
-          span.className = 'fallback';
-          span.textContent = '📦';
-          img.replaceWith(span);
-        },
-        { once: true },
-      );
-    });
   }
 
   // ------------------------------------------------------------ feedback

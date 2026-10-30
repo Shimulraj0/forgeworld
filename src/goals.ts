@@ -69,4 +69,40 @@ export const GOALS: Goal[] = [
     reward: { data: 10 },
     progress: (g) => [g.stats.placedTotal, 25],
   },
+  {
+    id: 'craft10',
+    label: 'Fabricate 10 assets',
+    reward: { data: 8 },
+    progress: (g) => [g.stats.crafted, 10],
+  },
+  {
+    id: 'place20',
+    label: 'Place 20 props in the world',
+    reward: { glass: 8 },
+    progress: (g) => [g.stats.placedTotal, 20],
+  },
+  {
+    id: 'unlock15',
+    label: 'Unlock 15 SimReady assets',
+    reward: { data: 12 },
+    progress: (g) => [g.stats.unlocked, 15],
+  },
+  {
+    id: 'harvest50',
+    label: 'Harvest 50 resources total',
+    reward: { wood: 10, stone: 10 },
+    progress: (g) => [Object.values(g.stats.harvested).reduce((a, b) => a + b, 0), 50],
+  },
+  {
+    id: 'refine10',
+    label: 'Refine 10 components',
+    reward: { plank: 2, plate: 2 },
+    progress: (g) => [g.stats.refined, 10],
+  },
+  {
+    id: 'master',
+    label: 'Master forger: craft + place 50 items',
+    reward: { data: 20 },
+    progress: (g) => [g.stats.placedTotal + g.stats.crafted, 50],
+  },
 ];

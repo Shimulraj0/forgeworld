@@ -73,6 +73,7 @@ export class Game {
   private downPos = new THREE.Vector2();
   private lastPointer = new THREE.Vector2();
   private cameraInit = false;
+  private contextLost = false;
   private promptText = '';
   private saveTimer = 0;
   private bursts: { mesh: THREE.Mesh; vel: THREE.Vector3; life: number }[] = [];
@@ -101,7 +102,29 @@ export class Game {
     this.placer = new Placer(this.world.scene, this.assets, this.camera, () => this.placed);
 
     window.addEventListener('resize', () => this.onResize());
+    this.bindContextRecovery();
     this.bindInput();
+  }
+
+  // ---------------------------------------------------------------- context
+
+  /**
+   * A lost WebGL context (GPU reset, driver crash, tab suspended too long)
+   * otherwise leaves a permanently black canvas. Pause the loop, and resume
+   * rendering once the browser restores the context.
+   */
+  private bindContextRecovery() {
+    const canvas = this.renderer.domElement;
+    canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      this.contextLost = true;
+      this.ui?.toast('Graphics context lost — restoring…', 'warn');
+    });
+    canvas.addEventListener('webglcontextrestored', () => {
+      this.contextLost = false;
+      this.clock.getDelta(); // drop the long gap so physics doesn't jump
+      this.ui?.toast('Graphics restored', 'good');
+    });
   }
 
   async boot() {
@@ -488,7 +511,7 @@ export class Game {
     window.location.reload();
   }
 
-  // ---------------------------------------------------------------- loop
+  // ---------------------------------------------------------------- burst
 
   private burst(pos: THREE.Vector3, color: THREE.Color, count: number) {
     let mat = this.burstMats.get(color.getHexString());
@@ -519,6 +542,7 @@ export class Game {
   }
 
   private updateBursts(dt: number) {
+    // Remove completed bursts first
     for (let i = this.bursts.length - 1; i >= 0; i--) {
       const b = this.bursts[i];
       b.life -= dt;
@@ -593,6 +617,7 @@ export class Game {
   private animate = () => {
     requestAnimationFrame(this.animate);
     const dt = Math.min(0.05, this.clock.getDelta());
+    if (this.contextLost) return;
     this.elapsed += dt;
 
     const forward = (this.keys.has('w') || this.keys.has('arrowup') ? 1 : 0) - (this.keys.has('s') || this.keys.has('arrowdown') ? 1 : 0);
